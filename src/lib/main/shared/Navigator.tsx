@@ -9,7 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import PersonIcon from "@mui/icons-material/Person";
 import HomeIcon from "@mui/icons-material/Home";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import { Link } from "react-router-dom";
+import { Link, useMatch, useResolvedPath } from "react-router-dom";
 
 const categories = [
   {
@@ -18,8 +18,7 @@ const categories = [
       {
         id: "Home",
         icon: <HomeIcon />,
-        active: true,
-        to: "/",
+        to: "/home",
       },
       { id: "User panel", icon: <PersonIcon />, to: "/user" },
     ],
@@ -63,10 +62,10 @@ export default function Navigator(props: DrawerProps) {
             <ListItem sx={{ py: 2, px: 3 }}>
               <ListItemText sx={{ color: "#fff" }}>{id}</ListItemText>
             </ListItem>
-            {children.map(({ id: childId, icon, active, to }) => (
+            {children.map(({ id: childId, icon, to }) => (
               <Link to={to} style={{ textDecoration: "none" }} key={childId}>
                 <ListItem disablePadding>
-                  <ListItemButton selected={active} sx={item}>
+                  <ListItemButton selected={_listItemActive(to)} sx={item}>
                     <ListItemIcon>{icon}</ListItemIcon>
                     <ListItemText>{childId}</ListItemText>
                   </ListItemButton>
@@ -80,3 +79,10 @@ export default function Navigator(props: DrawerProps) {
     </Drawer>
   );
 }
+
+const _listItemActive = (to: string): boolean => {
+  const resolvedPath = useResolvedPath(to);
+  const isActive = useMatch({ path: resolvedPath.pathname, end: false });
+
+  return isActive != null;
+};
