@@ -1,7 +1,7 @@
-export default function Register() {
+export const RegisterPage = () => {
   return (
     <>
       <div>Register</div>
     </>
   );
-}
+};

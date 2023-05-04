@@ -1,7 +1,7 @@
-export default function Login() {
+export const LoginPage = () => {
   return (
     <>
       <div>Login</div>
     </>
   );
-}
+};
