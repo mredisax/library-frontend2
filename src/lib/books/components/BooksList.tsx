@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
 interface Book {
     id: number;
     title: string;
@@ -15,9 +15,9 @@ export const BooksList = () => {
     const [books, setBooks] = useState<Book[]>([]);
     
     useEffect(() => {
-        fetch("http://localhost:2137/books")
-        .then((res) => res.json())
-        .then((data) => setBooks(data));
+        axios.get("http://localhost:2137/books")
+        .then((res) => setBooks(res.data))
+        .catch(err=>console.log(err))
     }, []);
 
 
