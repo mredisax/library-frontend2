@@ -9,7 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { Paperbase } from '../../../core';
+import { Paperbase } from '../../core';
 
 export const UserPage = () => {
   return (

@@ -5,7 +5,8 @@ import {
   AdminBooksPage,
   AdminDashboardPage,
 } from './lib/admin';
-import { HomePage, UserPage } from './lib/main';
+import { HomePage } from './lib/main';
+import { UserPage } from './lib/user';
 
 const App = () => {
   return (

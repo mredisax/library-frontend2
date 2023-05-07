@@ -4,7 +4,6 @@ import {
   Typography,
   Paper,
   Grid,
-  Button,
   TextField,
   Tooltip,
   IconButton,
@@ -13,7 +12,7 @@ import {
   Search as SearchIcon,
   Refresh as RefreshIcon,
 } from '@mui/icons-material';
-import { Paperbase } from '../../../core';
+import { Paperbase } from '../../core';
 
 export const HomePage = () => {
   return (
@@ -33,7 +32,7 @@ export const HomePage = () => {
               <Grid item xs>
                 <TextField
                   fullWidth
-                  placeholder="Search by email address, phone number, or user UID"
+                  placeholder="Search through books by title or author"
                   InputProps={{
                     disableUnderline: true,
                     sx: { fontSize: 'default' },
@@ -42,12 +41,9 @@ export const HomePage = () => {
                 />
               </Grid>
               <Grid item>
-                <Button variant="contained" sx={{ mr: 1 }}>
-                  Add user
-                </Button>
                 <Tooltip title="Reload">
                   <IconButton>
-                    <RefreshIcon color="inherit" sx={{ display: 'block' }} />
+                    <SearchIcon color="inherit" sx={{ display: 'block' }} />
                   </IconButton>
                 </Tooltip>
               </Grid>
