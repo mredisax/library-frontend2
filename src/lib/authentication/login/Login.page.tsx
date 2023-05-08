@@ -25,7 +25,7 @@ export const LoginPage = () => {
     setLoading(true);
 
     axios
-      .post('http://localhost:2137/login', {
+      .post('https://io.qqbit.pl/login', {
         email: mail,
         password: pass,
       })
