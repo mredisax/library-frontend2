@@ -55,7 +55,7 @@ export const AdminDashboardPage = () => {
           </Toolbar>
         </AppBar>
         <Typography sx={{ my: 5, mx: 2 }} color="text.secondary" align="center">
-          <h1>Admin</h1>
+          <h1>Admin - dash</h1>
         </Typography>
       </Paper>
     </Paperbase>
