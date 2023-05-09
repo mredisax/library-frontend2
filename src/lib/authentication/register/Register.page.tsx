@@ -13,6 +13,14 @@ import React from 'react';
 import axios, { AxiosError } from 'axios';
 import { MuiTelInput } from 'mui-tel-input';
 import { RegisterFormValidation } from './Register.types';
+import {
+  handleMailValidation,
+  handlePassValidation,
+  handlePassRptValidation,
+  handleNameValidation,
+  handleLastnameValidation,
+  handlePhoneValidation,
+} from '../../../core/textFieldValidators';
 
 export const RegisterPage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -53,39 +61,33 @@ export const RegisterPage = () => {
   };
 
   const handleMailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    validation.email.value = event.target.value;
+    handleMailValidation(event.target.value, validation);
     setValidation({ ...validation });
-    validation.email.validate();
   };
 
   const handlePassChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    validation.pass.value = event.target.value;
+    handlePassValidation(event.target.value, validation);
     setValidation({ ...validation });
-    validation.pass.validate();
   };
 
   const handlePassRptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    validation.passRepeat.value = event.target.value;
+    handlePassRptValidation(event.target.value, validation);
     setValidation({ ...validation });
-    validation.passRepeat.validate();
   };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    validation.name.value = event.target.value;
+    handleNameValidation(event.target.value, validation);
     setValidation({ ...validation });
-    validation.name.validate();
   };
 
   const handleLastnameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    validation.lastname.value = event.target.value;
+    handleLastnameValidation(event.target.value, validation);
     setValidation({ ...validation });
-    validation.lastname.validate();
   };
 
   const handlePhoneChange = (value: string) => {
-    validation.phone.value = value;
+    handlePhoneValidation(value, validation);
     setValidation({ ...validation });
-    validation.phone.validate();
   };
 
   return (
