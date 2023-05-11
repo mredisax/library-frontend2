@@ -18,6 +18,8 @@ import {
   DialogActions,
   Button,
   Stack,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -27,7 +29,6 @@ import {
   Person as PersonIcon,
 } from '@mui/icons-material';
 import {
-  handleMailValidation,
   handlePassValidation,
   handlePassRptValidation,
   handleNameValidation,
@@ -38,9 +39,14 @@ import { Paperbase } from '../../../core';
 import React from 'react';
 import { MuiTelInput } from 'mui-tel-input';
 import { LoadingButton } from '@mui/lab';
+import { RegisterFormValidation } from '../../authentication/register/Register.types';
 
 export const AdminUsersPage = () => {
-  const [open, setOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [snackbarSuccessOpen, setSnackbarSuccessOpen] = React.useState(false);
+  const [snackbarErrorOpen, setSnackbarErrorOpen] = React.useState(false);
+  const [snackbarSuccessMsg, setSnackbarSuccessMsg] = React.useState('');
+  const [snackbarErrorMsg, setSnackbarErrorMsg] = React.useState('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const [dispError, setDispError] = React.useState<boolean>(false);
   const [errorMsg, setErrorMsg] = React.useState<string>('');
@@ -49,17 +55,22 @@ export const AdminUsersPage = () => {
     new RegisterFormValidation()
   );
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleClickOpenDialog = () => {
+    setDialogOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
   };
 
-  const handleMailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    handleMailValidation(event.target.value, validation);
-    setValidation({ ...validation });
+  const handleEdit = () => {
+    setSnackbarErrorOpen(true);
+    setSnackbarErrorMsg('Edit not implemented!');
+  };
+
+  const handleClickDeleteUser = () => {
+    setSnackbarSuccessOpen(true);
+    setSnackbarSuccessMsg('Edit not implemented, but still its success');
   };
 
   const handlePassChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +96,28 @@ export const AdminUsersPage = () => {
   const handlePhoneChange = (value: string) => {
     handlePhoneValidation(value, validation);
     setValidation({ ...validation });
+  };
+
+  const handleCloseSnackbarSuccess = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbarSuccessOpen(false);
+  };
+
+  const handleCloseSnackbarError = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbarErrorOpen(false);
   };
 
   return (
@@ -121,48 +154,54 @@ export const AdminUsersPage = () => {
               </Grid>
             </Grid>
           </Toolbar>
-          <List>
-            <ListItem
-              secondaryAction={
-                <>
-                  <IconButton edge="end" aria-label="delete">
-                    <DeleteIcon />
-                  </IconButton>
-                  <IconButton
-                    edge="end"
-                    aria-label="edit"
-                    onClick={handleClickOpen}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </>
-              }
-            >
-              <ListItemAvatar>
-                <Avatar>
-                  <PersonIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Single-line item" />
-            </ListItem>
-          </List>
+        </AppBar>
 
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Subscribe</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                To subscribe to this website, please enter your email address
-                here. We will send updates occasionally.
-              </DialogContentText>
+        <List>
+          <ListItem
+            secondaryAction={
+              <>
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={handleClickDeleteUser}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <IconButton
+                  edge="end"
+                  aria-label="edit"
+                  onClick={handleClickOpenDialog}
+                >
+                  <EditIcon />
+                </IconButton>
+              </>
+            }
+          >
+            <ListItemAvatar>
+              <Avatar>
+                <PersonIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Single-line item" />
+          </ListItem>
+        </List>
+
+        <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+          <DialogTitle>User edit</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Edit fields or leave blank for no action.
+            </DialogContentText>
+            <Stack spacing={1}>
               <TextField
                 id="email"
                 label="Email address"
                 variant="outlined"
                 value={validation.email.value}
                 type={'email'}
-                onChange={handleMailChange}
-                error={validation.email.isErr}
-                helperText={validation.email.errMsg}
+                InputProps={{
+                  readOnly: true,
+                }}
               />
 
               <Stack
@@ -237,20 +276,51 @@ export const AdminUsersPage = () => {
                 forceCallingCode
                 disableDropdown
               />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <LoadingButton
-                size="small"
-                onClick={handleEdit}
-                loading={loading}
-                variant="contained"
-              >
-                Edit
-              </LoadingButton>
-            </DialogActions>
-          </Dialog>
-        </AppBar>
+
+              {dispError ? <Alert severity="error">{errorMsg}</Alert> : <></>}
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <LoadingButton
+              size="small"
+              onClick={handleEdit}
+              loading={loading}
+              variant="contained"
+            >
+              Edit
+            </LoadingButton>
+          </DialogActions>
+        </Dialog>
+        <Snackbar
+          open={snackbarSuccessOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbarSuccess}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert
+            onClose={handleCloseSnackbarSuccess}
+            severity="success"
+            sx={{ width: '100%' }}
+          >
+            {snackbarSuccessMsg}
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={snackbarErrorOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbarError}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert
+            onClose={handleCloseSnackbarError}
+            severity="error"
+            sx={{ width: '100%' }}
+          >
+            {snackbarErrorMsg}
+          </Alert>
+        </Snackbar>
       </Paper>
     </Paperbase>
   );
