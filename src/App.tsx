@@ -7,6 +7,7 @@ import {
 } from './lib/admin';
 import { HomePage } from './lib/main';
 import { UserPage } from './lib/user';
+import { LoginPage, RegisterPage } from './lib/authentication';
 import { BooksPage, BookPage } from './lib/books';
 
 const App = () => {
@@ -21,6 +22,8 @@ const App = () => {
         <Route path="/admin/books" element={<AdminBooksPage />} />
         <Route path="/admin/users" element={<AdminUsersPage />} />
         <Route path="/book/:id" element={<BookPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,10 +1,25 @@
 import { Grid } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { IBook } from '../../../core/types/Book';
+import axios from 'axios';
+interface Book {
+  id: number;
+  title: string;
+  author_id: number;
+  year: number;
+  category: string;
+  isbn: string;
+}
 
 export const BooksList = () => {
-  const [books, setBooks] = useState<IBook[]>([]);
+  const [books, setBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:2137/books')
+      .then((res) => setBooks(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     fetch('http://localhost:2137/books')
