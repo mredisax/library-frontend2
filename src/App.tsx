@@ -5,9 +5,11 @@ import {
   AdminBooksPage,
   AdminDashboardPage,
 } from './lib/admin';
-import { HomePage, UserPage } from './lib/main';
+import { HomePage } from './lib/main';
+import { UserPage } from './lib/user';
 import { LoginPage, RegisterPage } from './lib/authentication';
 import { BooksPage, BookPage } from './lib/books';
+
 const App = () => {
   return (
     <BrowserRouter>
