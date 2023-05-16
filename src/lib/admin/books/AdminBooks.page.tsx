@@ -4,96 +4,49 @@ import {
   Paper,
   Grid,
   TextField,
-  Tooltip,
-  IconButton,
-  ListItem,
-  ListItemText,
-  List,
-  ListItemAvatar,
-  Avatar,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
   Button,
-  Stack,
   Alert,
   Snackbar,
+  TableCell,
+  Typography,
+  TableRow,
+  TableContainer,
+  TableBody,
+  Table,
+  TableHead,
+  AlertColor,
 } from '@mui/material';
-import {
-  Search as SearchIcon,
-  Refresh as RefreshIcon,
-  Delete as DeleteIcon,
-  Edit as EditIcon,
-  Person as PersonIcon,
-} from '@mui/icons-material';
-import {
-  handlePassValidation,
-  handlePassRptValidation,
-  handleNameValidation,
-  handleLastnameValidation,
-  handlePhoneValidation,
-} from '../../../core/textFieldValidators';
+
+import { Search as SearchIcon } from '@mui/icons-material';
 import { Paperbase } from '../../../core';
-import React from 'react';
-import { MuiTelInput } from 'mui-tel-input';
 import { LoadingButton } from '@mui/lab';
-import { RegisterFormValidation } from '../../authentication/register/Register.types';
+import { useBooksData } from './hooks/useBooksData.hook';
+import { useAuthorsData } from './hooks/useAuthorsData.hook';
+import { filterBook } from './hooks/filterBook';
+import { snackbarClose } from './hooks/snackbarClose';
+import { IAuthor } from '../../../core/types/Author';
+import { IBookAuthor } from '../../../core/types/BookAuthor';
+import { useState } from 'react';
+import { BookForm } from './components/BookForm.component';
 
 export const AdminBooksPage = () => {
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [snackbarSuccessOpen, setSnackbarSuccessOpen] = React.useState(false);
-  const [snackbarErrorOpen, setSnackbarErrorOpen] = React.useState(false);
-  const [snackbarSuccessMsg, setSnackbarSuccessMsg] = React.useState('');
-  const [snackbarErrorMsg, setSnackbarErrorMsg] = React.useState('');
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [dispError, setDispError] = React.useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = React.useState<string>('');
-
-  const [validation, setValidation] = React.useState<RegisterFormValidation>(
-    new RegisterFormValidation()
+  const [dialogEditOpen, setDialogEditOpen] = useState(false);
+  const [dialogAddOpen, setDialogAddOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('error');
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [searchData, setSearchData] = useState('');
+  const [editBookAuthor, setEditBookAuthor] = useState<IBookAuthor | null>(
+    null
   );
-
-  const handleClickOpenDialog = () => {
-    setDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setDialogOpen(false);
-  };
-
-  const handleEdit = () => {
-    setSnackbarErrorOpen(true);
-    setSnackbarErrorMsg('Edit not implemented!');
-  };
-
-  const handleClickDeleteUser = () => {
-    setSnackbarSuccessOpen(true);
-    setSnackbarSuccessMsg('Edit not implemented, but still its success');
-  };
-
-  const handleCloseSnackbarSuccess = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setSnackbarSuccessOpen(false);
-  };
-
-  const handleCloseSnackbarError = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setSnackbarErrorOpen(false);
-  };
+  const { books } = useBooksData();
+  const { authors } = useAuthorsData();
 
   return (
     <Paperbase>
@@ -117,66 +70,131 @@ export const AdminBooksPage = () => {
                     disableUnderline: true,
                     sx: { fontSize: 'default' },
                   }}
+                  onChange={(e) => {
+                    setSearchData(e.target.value);
+                  }}
                   variant="standard"
                 />
               </Grid>
               <Grid item>
-                <Button variant="contained" sx={{ mr: 1 }}>
+                <Button
+                  variant="contained"
+                  sx={{ mr: 1 }}
+                  onClick={() => {
+                    setDialogAddOpen(true);
+                  }}
+                >
                   Add book
                 </Button>
-                <Tooltip title="Reload">
-                  <IconButton>
-                    <RefreshIcon color="inherit" sx={{ display: 'block' }} />
-                  </IconButton>
-                </Tooltip>
               </Grid>
             </Grid>
           </Toolbar>
         </AppBar>
 
-        <List>
-          <ListItem
-            secondaryAction={
-              <>
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  onClick={handleClickDeleteUser}
-                >
-                  <DeleteIcon />
-                </IconButton>
-                <IconButton
-                  edge="end"
-                  aria-label="edit"
-                  onClick={handleClickOpenDialog}
-                >
-                  <EditIcon />
-                </IconButton>
-              </>
-            }
-          >
-            <ListItemAvatar>
-              <Avatar>
-                <PersonIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Single-line item" />
-          </ListItem>
-        </List>
+        <Grid container spacing={4} sx={{ p: 6 }}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Id
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Title
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Author
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Year
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      Category
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle2" fontWeight={600}>
+                      ISBN
+                    </Typography>
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {books.map((_book) => {
+                  const _author: IAuthor | undefined = authors.find(
+                    (author) => author.id === _book.author_id
+                  );
 
-        <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-          <DialogTitle>User edit</DialogTitle>
+                  if (!filterBook(_book, searchData)) return null;
+                  return (
+                    <TableRow key={_book.id}>
+                      <TableCell>{_book.id}</TableCell>
+                      <TableCell>{_book.title}</TableCell>
+                      <TableCell>{`${_author?.name} ${_author?.lastname}`}</TableCell>
+                      <TableCell>{_book.year}</TableCell>
+                      <TableCell>{_book.category}</TableCell>
+                      <TableCell>{_book.isbn}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            if (!_author) return;
+                            setEditBookAuthor({
+                              book: _book,
+                              author: _author,
+                            });
+                            setDialogEditOpen(true);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outlined"
+                          onClick={() => {
+                            //TODO
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+
+        <Dialog open={dialogEditOpen} onClose={() => setDialogEditOpen(false)}>
+          <DialogTitle>Book edit</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Edit fields or leave blank for no action.
+              Edit fields or leave for no action.
             </DialogContentText>
-            <Stack spacing={1}></Stack>
+            <BookForm bookAuthor={editBookAuthor} />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button onClick={() => setDialogEditOpen(false)}>Cancel</Button>
             <LoadingButton
               size="small"
-              onClick={handleEdit}
+              onClick={() => {
+                setSnackbarOpen(true);
+                setSnackbarSeverity('error');
+                setSnackbarMsg('Edit not implemented!');
+              }}
               loading={loading}
               variant="contained"
             >
@@ -184,33 +202,52 @@ export const AdminBooksPage = () => {
             </LoadingButton>
           </DialogActions>
         </Dialog>
-        <Snackbar
-          open={snackbarSuccessOpen}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbarSuccess}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <Alert
-            onClose={handleCloseSnackbarSuccess}
-            severity="success"
-            sx={{ width: '100%' }}
-          >
-            {snackbarSuccessMsg}
-          </Alert>
-        </Snackbar>
+
+        <Dialog open={dialogAddOpen} onClose={() => setDialogAddOpen(false)}>
+          <DialogTitle>New book</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Fill the form below to add a new book
+            </DialogContentText>
+            <BookForm bookAuthor={null} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDialogAddOpen(false)}>Cancel</Button>
+            <LoadingButton
+              size="small"
+              onClick={() => {
+                setSnackbarOpen(true);
+                setSnackbarSeverity('error');
+                setSnackbarMsg('Add not implemented!');
+              }}
+              loading={loading}
+              variant="contained"
+            >
+              Add
+            </LoadingButton>
+          </DialogActions>
+        </Dialog>
 
         <Snackbar
-          open={snackbarErrorOpen}
+          open={snackbarOpen}
           autoHideDuration={6000}
-          onClose={handleCloseSnackbarError}
+          onClose={() => {
+            if (snackbarClose()) {
+              setSnackbarOpen(false);
+            }
+          }}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
           <Alert
-            onClose={handleCloseSnackbarError}
-            severity="error"
+            onClose={() => {
+              if (snackbarClose()) {
+                setSnackbarOpen(false);
+              }
+            }}
+            severity={snackbarSeverity}
             sx={{ width: '100%' }}
           >
-            {snackbarErrorMsg}
+            {snackbarMsg}
           </Alert>
         </Snackbar>
       </Paper>
