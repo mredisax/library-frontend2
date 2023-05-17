@@ -5,7 +5,6 @@ import {
   AdminBooksPage,
   AdminDashboardPage,
 } from './lib/admin';
-import { HomePage } from './lib/main';
 import { UserPage } from './lib/user';
 import { BooksPage, BookPage } from './lib/books';
 import { RegisterPage } from './lib/authentication';
@@ -13,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { UserContext } from './core/context/UserContext';
 import { useLocalStorageUser } from './core/localStorage';
 import { User } from './core/localStorage/models/User.model';
+import { HomePage } from './lib/main/Home.page';
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
