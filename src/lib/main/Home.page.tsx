@@ -16,15 +16,14 @@ import {
   Box,
   IconButton,
   Snackbar,
+  Tooltip,
 } from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Search as SearchIcon, Close as CloseIcon } from '@mui/icons-material';
 import { Paperbase } from '../../core';
 import { useBooksData } from './hooks/useBooksData.hook';
 import { useAuthorsData } from './hooks/useAuthorsData.hook';
 import { IAuthor } from '../../core/types/Author';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { filterBook } from './services/filterBook';
 import { IBook } from '../../core/types/Book';
 import { useCanBookBeReserved } from './hooks/useCanBookBeReserved.hook';
@@ -32,6 +31,7 @@ import { modalStyle } from './constants';
 import axios from 'axios';
 import { serverAddress } from '../../core/config/server';
 import { format } from 'date-fns';
+import { UserContext } from '../../core/context/UserContext';
 
 export const HomePage = () => {
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false);
@@ -45,14 +45,15 @@ export const HomePage = () => {
   const { authors } = useAuthorsData();
   const { canBookBeReserved, isFetching, reservationDueDate } =
     useCanBookBeReserved(reservedBook, selectedDate);
+  const { user } = useContext(UserContext);
 
   const reserveBook = async () => {
-    if (reservedBook) {
+    if (reservedBook && user) {
       const res = await axios.post(
         `${serverAddress}/reservation/`,
         {
           book_id: reservedBook.id,
-          user_id: 3,
+          user_id: user.id,
         },
         {
           headers: {
@@ -243,9 +244,20 @@ export const HomePage = () => {
                   <Typography>Loading...</Typography>
                 </div>
               ) : canBookBeReserved ? (
-                <Button variant="contained" onClick={() => reserveBook()}>
-                  <Typography variant="button">RESERVE</Typography>
-                </Button>
+                <Tooltip
+                  title={!user ? 'You must login first.' : ''}
+                  disableInteractive={user !== undefined}
+                >
+                  <span>
+                    <Button
+                      variant="contained"
+                      onClick={() => reserveBook()}
+                      disabled={user === null}
+                    >
+                      <Typography variant="button">RESERVE</Typography>
+                    </Button>
+                  </span>
+                </Tooltip>
               ) : (
                 <Box>
                   <Typography variant="subtitle1" fontWeight={500}>
