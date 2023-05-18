@@ -13,6 +13,7 @@ import React, { useContext, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { UserContext } from '../../../core/context/UserContext';
 import { serverAddress } from '../../../core/config/server';
+import { useLocalStorageUser } from '../../../core/localStorage';
 
 export const LoginComponent = () => {
   const [loading, setLoading] = useState(false);
@@ -20,9 +21,8 @@ export const LoginComponent = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [mail, setMail] = useState('');
   const [pass, setPass] = useState('');
-  const { setUser, user } = useContext(UserContext);
-
-  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
+  const { saveUserToLocalStorage } = useLocalStorageUser();
 
   const handleLogin = () => {
     setLoading(true);
@@ -38,10 +38,9 @@ export const LoginComponent = () => {
       )
       .then((res) => {
         if (res.status === 200) {
+          saveUserToLocalStorage(res.data.user);
           setUser(res.data.user);
-          console.log(res.data.user);
           setLoading(false);
-          console.log(user);
         } else {
           setErrorMsg(`Błąd logowania: ${res.statusText}`);
           setDispError(true);
