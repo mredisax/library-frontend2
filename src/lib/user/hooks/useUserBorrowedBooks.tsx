@@ -41,6 +41,7 @@ export const useUserBorrowedBooks = (userId: string) => {
           ...book,
           checkout_date: borrow.checkout_date,
           return_date: borrow.return_date,
+          borrow_id: borrow.id,
         };
       });
 

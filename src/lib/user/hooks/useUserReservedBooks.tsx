@@ -42,6 +42,8 @@ export const useUserReservedBooks = (userId: string) => {
         return {
           ...book,
           reservation_span: reservation.reservation_span,
+          reservation_id: reservation.id,
+          reservation_user_id: reservation.user_id,
         };
       });
 

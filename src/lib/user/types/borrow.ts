@@ -11,4 +11,5 @@ export interface IBorrow {
 export type IBorrowedBook = IBook & {
   checkout_date: string;
   return_date: string;
+  borrow_id: number;
 };
