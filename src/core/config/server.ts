@@ -1,1 +1,1 @@
-export const serverAddress = 'https://backend.io.qqbit.pl';
+export const serverAddress = 'http://localhost:2138';

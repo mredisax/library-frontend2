@@ -6,11 +6,29 @@ import { IAuthor } from '../../../core/types/Author';
 export const useAuthorsData = () => {
   const [authors, setAuthors] = useState<Array<IAuthor>>([]);
 
-  useEffect(() => {
+  const refreshAuthorsData = () => {
     axios.get(`${serverAddress}/authors`).then((res) => {
       setAuthors(res.data);
     });
+  };
+
+  useEffect(() => {
+    refreshAuthorsData();
   }, []);
 
-  return { authors };
+  const addAuthor = async (firstName: string, lastName: string) => {
+    const res = await axios.post(
+      `${serverAddress}/authors/add`,
+      { first_name: firstName, last_name: lastName },
+      {
+        validateStatus: (status) => status < 500,
+      }
+    );
+
+    if (res.status === 200) {
+      refreshAuthorsData();
+    }
+  };
+
+  return { authors, addAuthor };
 };

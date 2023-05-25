@@ -32,5 +32,15 @@ export const useBooksData = () => {
     refreshBooksData();
   }, []);
 
-  return { booksData, isLoading, refreshBooksData };
+  const addBook = async (book: IBook) => {
+    const res = await axios.post(`${serverAddress}/books/add`, book, {
+      validateStatus: (status) => status < 500,
+    });
+
+    if (res.status === 200) {
+      refreshBooksData();
+    }
+  };
+
+  return { booksData, isLoading, refreshBooksData, addBook };
 };
