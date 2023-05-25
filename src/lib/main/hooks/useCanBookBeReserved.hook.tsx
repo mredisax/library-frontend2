@@ -15,7 +15,7 @@ export const useCanBookBeReserved = (
   useEffect(() => {
     if (book) {
       setIsFetching(true);
-      getCanBookBeReserved(book.id, startDate)
+      getCanBookBeReserved(book.id!, startDate)
         .then((res) => {
           setCanBookBeReserved(res.canBeReserved);
           setReservationDueDate(res.reservationDueDate);
