@@ -16,13 +16,13 @@ export const BooksList = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:2137/books')
+      .get('${serverAddress}/books')
       .then((res) => setBooks(res.data))
       .catch((err) => console.log(err));
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:2137/books')
+    fetch('${serverAddress}/books')
       .then((res) => res.json())
       .then((data) => setBooks(data));
   }, []);

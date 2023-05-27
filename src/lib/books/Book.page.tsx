@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Paperbase } from '../../core';
 import axios from 'axios';
 import { Button, Paper } from '@mui/material';
+import { serverAddress } from '../../../core/config/server';
 
 interface Book {
     id: number;
@@ -27,7 +28,7 @@ export const BookPage = () => {
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    axios.get(`http://localhost:2137/books/id/${id}`)
+    axios.get(`${serverAddress}/books/id/${id}`)
         .then((res) => setBook(res.data))
         .catch(err=>console.log(err))
   }, [id, isReserved]);
@@ -37,7 +38,7 @@ export const BookPage = () => {
 
     const handleReservation = () => {
     console.log(book?.id)
-    axios.post(`http://localhost:2137/reservation/`,{
+    axios.post(`${serverAddress}/reservation/`,{
         book_id: book?.id,
         user_id: 3,
     })
